@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreintervalRequest;
 use App\Http\Requests\UpdateintervalRequest;
-use App\Models\interval;
+use App\Models\Interval;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class IntervalController extends Controller
 {
@@ -23,10 +25,26 @@ class IntervalController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function interval_start()
     {
-        //
+        Interval::create([
+            'user_id' => Auth::id(),
+            'start_time' => Carbon::now()
+        ]);
+
+        return view('/index');
     }
+
+    public function interval_end()
+    {
+        Interval::create([
+            'user_id' => Auth::id(),
+            'end_time' => Carbon::now()
+        ]);
+
+        return view('/index');
+    }
+
 
     /**
      * Store a newly created resource in storage.

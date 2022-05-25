@@ -41,4 +41,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    //Attendanceモデルとのリレーション　1対多　1人のユーザーは何度でも休憩できる
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
+    //intervalモデルとのリレーション　1対多　1人のユーザーは何度でも休憩できる
+    public function intervals()
+    {
+        return $this->hasMany(Interval::class);
+    }
 }

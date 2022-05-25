@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreattendanceRequest;
 use App\Http\Requests\UpdateattendanceRequest;
-use App\Models\attendance;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Attendance;
+use Carbon\Carbon;
 
 class AttendanceController extends Controller
 {
@@ -15,7 +17,7 @@ class AttendanceController extends Controller
      */
     public function index()
     {
-        //
+        return view('/index');
     }
 
     /**
@@ -23,9 +25,24 @@ class AttendanceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function atte_start()
     {
-        //
+        Attendance::create([
+        'user_id' => Auth::id(),
+        'start_time' => Carbon::now()
+        ]);
+
+        return view('/index');
+    }
+
+    public function atte_end()
+    {
+        Attendance::create([
+            'user_id' => Auth::id(),
+            'end_time' => Carbon::now()
+        ]);
+
+        return view('/index');
     }
 
     /**
