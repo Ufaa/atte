@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateintervalRequest;
 use App\Models\Interval;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Ramsey\Uuid\Type\Integer;
 
 class IntervalController extends Controller
 {
@@ -32,17 +33,46 @@ class IntervalController extends Controller
             'start_time' => Carbon::now()
         ]);
 
-        return view('/index');
+        return redirect('/');
     }
 
     public function interval_end()
     {
-        Interval::create([
-            'user_id' => Auth::id(),
-            'end_time' => Carbon::now()
-        ]);
+        // Interval::create([
+        //     'user_id' => Auth::id(),
+        //     'end_time' => Carbon::now()
+        // ]);
 
-        return view('/index');
+        // $start_at = $request->start_date . ' ' . $request->start_time;
+        // $num_of_users = $request->num_of_users;
+        
+        // $interval_start_date = Interval::where('created_at')->format('Y-m-d');
+
+        $today = Carbon::today();
+        $interval = Interval::whereDate('created_at', $today)->get();
+        $interval_start = Interval::where('start_time')->get();
+        // dd($interval);
+        if (
+            is_null($interval_start)
+        ) {
+            Interval::where('user_id', Auth::id())
+                // ->where($interval, Carbon::today())
+                ->update([
+                    'end_time' => null
+                ]);
+            return redirect('/');
+        }
+        else
+        {
+            Interval::where('user_id', Auth::id())
+                // ->where($interval, Carbon::today())
+                ->update([
+                    'end_time' => Carbon::now()
+                ]);
+
+            return redirect('/');
+        }
+
     }
 
 

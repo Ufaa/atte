@@ -17,7 +17,7 @@ class AttendanceController extends Controller
      */
     public function index()
     {
-        return view('/index');
+        return view ('/index');
     }
 
     /**
@@ -32,7 +32,7 @@ class AttendanceController extends Controller
         'start_time' => Carbon::now()
         ]);
 
-        return view('/index');
+        return redirect ('/');
     }
 
     public function atte_end()
@@ -42,7 +42,7 @@ class AttendanceController extends Controller
             'end_time' => Carbon::now()
         ]);
 
-        return view('/index');
+        return redirect('/');
     }
 
     /**
