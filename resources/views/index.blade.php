@@ -445,6 +445,10 @@
   <footer class="footer">
     <small class="sp-copyright">
       Atte, inc.
+      <br>
+      <a href="/youtube" style="color:red;">youtube動画リスト apiテスト</a>
+      <br>
+      <a href="https://console.cloud.google.com/apis/credentials?project=test-youtube-api-app-351602" style="color:blue;">apiキー制限を外す</a>
     </small>
   </footer>
 
@@ -452,6 +456,10 @@
   <div class="sp-footer">
     <small class="sp-copyright">
       Atte, inc.
+      <br>
+      <a href="/youtube" style="color:red;">youtube動画リスト apiテスト</a>
+      <br>
+      <a href="https://console.cloud.google.com/apis/credentials?project=test-youtube-api-app-351602" style="color:blue;">apiキー制限を外す</a>
     </small>
   </div>
 

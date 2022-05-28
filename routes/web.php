@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\IntervalController;
+use App\Http\Controllers\YoutubeController;
 use Illuminate\Support\Facades\Auth;
 
 Auth::routes();
@@ -22,3 +23,6 @@ Route::post('/interval_start', [IntervalController::class, 'interval_start'])->n
 Route::post('/interval_end', [IntervalController::class, 'interval_end'])->name('interval_end');
 // 日付別勤怠情報取得
 
+
+//youtube api練習
+Route::get('/youtube', [YoutubeController::class, 'index']);
