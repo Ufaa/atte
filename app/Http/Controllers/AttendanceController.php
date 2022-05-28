@@ -27,21 +27,21 @@ class AttendanceController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-     // 次：同じ日に２個作れないようにする。
     public function atte_start()
     {
         $last_atte_end = Attendance::where('date', Carbon::today())->where('end_time')->latest()->first();
-        $last_atte_date =Attendance::where('date', Carbon::today())->get();
+        $last_atte_date =Attendance::where('date', Carbon::today())->latest()->first();
+        //  dd($last_atte_date);
 
-        if ($last_atte_end == null) {
+        if (!is_null($last_atte_date)){
+            return redirect('/');
+        }
+        else if ($last_atte_end == null) {
             Attendance::create([
                 'user_id' => Auth::id(),
                 'start_time' => Carbon::now(),
                 'date' => Carbon::today()
             ]);
-            return redirect('/');
-        }
-        else if($last_atte_date == !null){
             return redirect('/');
         }
         else{
