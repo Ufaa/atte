@@ -6,6 +6,7 @@ use App\Http\Requests\StoreattendanceRequest;
 use App\Http\Requests\UpdateattendanceRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Attendance;
+use Attribute;
 use Carbon\Carbon;
 
 class AttendanceController extends Controller
@@ -29,7 +30,8 @@ class AttendanceController extends Controller
     {
         Attendance::create([
         'user_id' => Auth::id(),
-        'start_time' => Carbon::now()
+        'start_time' => Carbon::now(),
+        'date' => Carbon::today()
         ]);
 
         return redirect ('/');
@@ -37,12 +39,16 @@ class AttendanceController extends Controller
 
     public function atte_end()
     {
-        Attendance::create([
-            'user_id' => Auth::id(),
-            'end_time' => Carbon::now()
-        ]);
-
-        return redirect('/');
+        if(is_null('start_time')){
+            return redirect('/');
+        }
+        else{
+            Attendance::where('date', Carbon::today())
+                ->update([
+                    'end_time' => Carbon::now()
+                ]);
+            return redirect('/');
+        }
     }
 
     /**

@@ -30,7 +30,8 @@ class IntervalController extends Controller
     {
         Interval::create([
             'user_id' => Auth::id(),
-            'start_time' => Carbon::now()
+            'start_time' => Carbon::now(),
+            'date' => Carbon::today()
         ]);
 
         return redirect('/');
@@ -38,41 +39,15 @@ class IntervalController extends Controller
 
     public function interval_end()
     {
-        // Interval::create([
-        //     'user_id' => Auth::id(),
-        //     'end_time' => Carbon::now()
-        // ]);
-
-        // $start_at = $request->start_date . ' ' . $request->start_time;
-        // $num_of_users = $request->num_of_users;
-        
-        // $interval_start_date = Interval::where('created_at')->format('Y-m-d');
-
-        $today = Carbon::today();
-        $interval = Interval::whereDate('created_at', $today)->get();
-        $interval_start = Interval::where('start_time')->get();
-        // dd($interval);
-        if (
-            is_null($interval_start)
-        ) {
-            Interval::where('user_id', Auth::id())
-                // ->where($interval, Carbon::today())
-                ->update([
-                    'end_time' => null
-                ]);
+        if (is_null('start_time')) {
             return redirect('/');
-        }
-        else
-        {
-            Interval::where('user_id', Auth::id())
-                // ->where($interval, Carbon::today())
+        } else {
+            Interval::where('date', Carbon::today())
                 ->update([
                     'end_time' => Carbon::now()
                 ]);
-
             return redirect('/');
         }
-
     }
 
 
