@@ -17,12 +17,14 @@ Route::get('/', [AttendanceController::class, 'index'])->name('index');
 Route::post('/atte_start', [AttendanceController::class, 'atte_start'])->name('atte_start');
 // 勤務終了打刻
 Route::post('/atte_end', [AttendanceController::class, 'atte_end'])->name('atte_end');
+
 // 休憩開始打刻
 Route::post('/interval_start', [IntervalController::class, 'interval_start'])->name('interval_start');
 // 休憩終了打刻
 Route::post('/interval_end', [IntervalController::class, 'interval_end'])->name('interval_end');
-// 日付別勤怠情報取得
 
+// 日付別勤怠情報取得
+Route::get('/attendance', [AttendanceController::class, 'attendance'])->name('attendance');
 
 //youtube api練習
 Route::get('/youtube', [YoutubeController::class, 'index']);

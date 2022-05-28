@@ -49,6 +49,9 @@ class AttendanceController extends Controller
         }
     }
 
+    //次：勤務終了を押したら同日の休憩時間を足したものを勤務開始-勤務終了から引いて勤務総時間を格納する。
+    //9時間加算される謎・・・なぜかグリニッジ標準時基準（+9時間）になるから。
+    //現状で終了時間が入る前の時間からの経過時間がstoreされる。（00:00:00からCarbon::nowの経過時間）よって経過時間が入力された後にstoreされるようにしたい。→functionの中で{}のあとに{}を作って繋げればOK。
     public function atte_end()
     {
         $last_atte_end = Attendance::where('date', Carbon::today())->where('end_time')->latest()->first();
@@ -56,9 +59,21 @@ class AttendanceController extends Controller
         if ($last_atte_end == null) {
             return redirect('/');
         } else {
-            Attendance::where('date', Carbon::today())->where('end_time')->latest()->first()->update([
-                'end_time' => Carbon::now()
+            Attendance::where('date', Carbon::today())->latest()->first()->update([
+                'end_time' => Carbon::now(),
             ]);
+        }
+        {
+            $time_from_before = Attendance::where('date', Carbon::today())->latest()->first('start_time');
+            $time_to_before = Attendance::where('date', Carbon::today())->latest()->first('end_time');
+            $diff = (strtotime($time_to_before->end_time) - strtotime($time_from_before->start_time)) - 32400;
+            $diffTime = date("H:i:s", $diff);
+            //  dd($diffTime);
+
+            Attendance::where('date', Carbon::today())->latest()->first()->update([
+                'total_time' => $diffTime,
+            ]);
+
             return redirect('/');
         }
     }
@@ -80,9 +95,11 @@ class AttendanceController extends Controller
      * @param  \App\Models\attendance  $attendance
      * @return \Illuminate\Http\Response
      */
-    public function show(attendance $attendance)
+
+    //次　勤務開始、勤務終了、休憩時間（合計）、勤務時間（休憩を引いた時間）を表示する。（view?それともコントローラ？）
+    public function attendance()
     {
-        //
+        return view('/attendance');
     }
 
     /**

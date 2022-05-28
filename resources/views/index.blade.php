@@ -340,7 +340,7 @@
     <nav class="header-nav">
       <ul class="header-nav-list">
         <li class="header-nav-item"><a href="/index">ホーム</a></li>
-        <li class="header-nav-item"><a href="service.html">日付一覧</a></li>
+        <li class="header-nav-item"><a href="/attendance">日付一覧</a></li>
         <li class="header-nav-item">ログアウト
           <!-- Rese2を真似る-->
         </li>
