@@ -26,6 +26,8 @@ class AttendanceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+     // 次：勤務終了してない場合は追加できないようにする。or 同じ日に２個作れないようにする。
     public function atte_start()
     {
         Attendance::create([
@@ -36,7 +38,7 @@ class AttendanceController extends Controller
 
         return redirect ('/');
     }
-
+    // 次：勤務終了が2回押せないようにする
     public function atte_end()
     {
         if(is_null('start_time')){

@@ -28,15 +28,23 @@ class IntervalController extends Controller
      */
     public function interval_start()
     {
-        Interval::create([
-            'user_id' => Auth::id(),
-            'start_time' => Carbon::now(),
-            'date' => Carbon::today()
-        ]);
+        $last_interval_end = Interval::where('date', Carbon::today())->where('end_time')->latest()->first();
 
-        return redirect('/');
+        if($last_interval_end == null){
+            Interval::create([
+                'user_id' => Auth::id(),
+                'start_time' => Carbon::now(),
+                'date' => Carbon::today()
+            ]);
+
+            return redirect('/');
+        }
+        else{
+            return redirect('/');
+        }
     }
 
+    // 次：休憩終了が2回押せないようにする
     public function interval_end()
     {
         if (is_null('start_time')) {
