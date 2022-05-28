@@ -27,28 +27,38 @@ class AttendanceController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-     // 次：勤務終了してない場合は追加できないようにする。or 同じ日に２個作れないようにする。
+     // 次：同じ日に２個作れないようにする。
     public function atte_start()
     {
-        Attendance::create([
-        'user_id' => Auth::id(),
-        'start_time' => Carbon::now(),
-        'date' => Carbon::today()
-        ]);
+        $last_atte_end = Attendance::where('date', Carbon::today())->where('end_time')->latest()->first();
+        $last_atte_date =Attendance::where('date', Carbon::today())->get();
 
-        return redirect ('/');
-    }
-    // 次：勤務終了が2回押せないようにする
-    public function atte_end()
-    {
-        if(is_null('start_time')){
+        if ($last_atte_end == null) {
+            Attendance::create([
+                'user_id' => Auth::id(),
+                'start_time' => Carbon::now(),
+                'date' => Carbon::today()
+            ]);
+            return redirect('/');
+        }
+        else if($last_atte_date == !null){
             return redirect('/');
         }
         else{
-            Attendance::where('date', Carbon::today())
-                ->update([
-                    'end_time' => Carbon::now()
-                ]);
+            return redirect('/');
+        }
+    }
+
+    public function atte_end()
+    {
+        $last_atte_end = Attendance::where('date', Carbon::today())->where('end_time')->latest()->first();
+
+        if ($last_atte_end == null) {
+            return redirect('/');
+        } else {
+            Attendance::where('date', Carbon::today())->where('end_time')->latest()->first()->update([
+                'end_time' => Carbon::now()
+            ]);
             return redirect('/');
         }
     }

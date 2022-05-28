@@ -36,22 +36,20 @@ class IntervalController extends Controller
                 'start_time' => Carbon::now(),
                 'date' => Carbon::today()
             ]);
-
             return redirect('/');
-        }
-        else{
+        } else {
             return redirect('/');
         }
     }
 
-    // 次：休憩終了が2回押せないようにする
     public function interval_end()
     {
-        if (is_null('start_time')) {
+        $last_interval_end = Interval::where('date', Carbon::today())->where('end_time')->latest()->first();
+
+        if ($last_interval_end == null) {
             return redirect('/');
         } else {
-            Interval::where('date', Carbon::today())
-                ->update([
+            Interval::where('date', Carbon::today())->where('end_time')->latest()->first()->update([
                     'end_time' => Carbon::now()
                 ]);
             return redirect('/');
