@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreintervalRequest;
 use App\Http\Requests\UpdateintervalRequest;
 use App\Models\Interval;
+use App\Models\Attendance;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Ramsey\Uuid\Type\Integer;
@@ -26,21 +27,52 @@ class IntervalController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    //次：勤務開始してないと休憩開始できない、atte　endが!nullならダメ。
     public function interval_start()
     {
-        $last_interval_end = Interval::where('date', Carbon::today())->where('end_time')->latest()->first();
+        //勤務開始してないと休憩を開始できない、勤務開始してたら次へ
+        $last_atte_id =
+        Interval::where('date', Carbon::today())->latest()->first('attendance_id');
+        $last_atte_start =
+        Attendance::where('date', Carbon::today())->latest()->first('start_time');
+        $last_atte_end = Attendance::where('date', Carbon::today())->latest()->first('end_time');
+        $last_interval_start = Interval::where('date', Carbon::today())->latest()->first('start_time');
+        $last_interval_end = Interval::where('date', Carbon::today())->latest()->first('end_time');
+        $attendance =
+        Attendance::where('date', Carbon::today())->latest()->first();
+        // dd($last_atte_id);
 
-        if($last_interval_end == null){
-            Interval::create([
-                'user_id' => Auth::id(),
+        if ($last_atte_start == null) {
+            return redirect('/');
+        } else if ($last_interval_start == null) {
+            Interval::where('date', Carbon::today())->latest()->first()->update([
                 'start_time' => Carbon::now(),
-                'date' => Carbon::today()
             ]);
             return redirect('/');
-        } else {
+        } else if ($last_interval_start !== null && $last_interval_end == !null) {
+            $attendance = Attendance::where('date', Carbon::today())->latest()->first();
+            Interval::create([
+                'user_id' => Auth::id(),
+                'attendance_id' => $attendance->id,
+                'date' => Carbon::today(),
+                'start_time' => Carbon::now()
+            ]);
             return redirect('/');
+        } 
+        if ($last_interval_end == null) {
+            return redirect('/');
+        } else {
+            return redirect('/');            
         }
-    }
+
+
+        //勤務終了していたら休憩を開始できない、勤務開始して勤務終了していなけば次へ
+        //まず勤務を開始していて、休憩が初めてなら、休憩を新規開始する
+        //休憩1回目をとっていて、休憩を終了していなければ休憩を開始できない
+        //休憩1回目を取っていて、その休憩を終了していたら、休憩2回目を新規追加する
+        //休憩2回目が終わってなければ勤務終了できない。
+
 
     public function interval_end()
     {

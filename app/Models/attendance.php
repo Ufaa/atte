@@ -15,5 +15,9 @@ class attendance extends Model
         return $this->belongsTo('App\Models\User');
     }
 
-
+    //Intervalモデルとのリレーション　1対多　1度の勤務で何度でも休憩できる
+    public function intervals()
+    {
+        return $this->hasMany(Interval::class);
+    }
 }

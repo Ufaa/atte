@@ -6,8 +6,10 @@ use App\Http\Requests\StoreattendanceRequest;
 use App\Http\Requests\UpdateattendanceRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Attendance;
+use App\Models\Interval;
 use Attribute;
 use Carbon\Carbon;
+use Ramsey\Uuid\Type\Integer;
 
 class AttendanceController extends Controller
 {
@@ -42,9 +44,19 @@ class AttendanceController extends Controller
                 'start_time' => Carbon::now(),
                 'date' => Carbon::today()
             ]);
-            return redirect('/');
+
         }
         else{
+        }
+        {
+            $attendance =
+            Attendance::where('date', Carbon::today())->latest()->first();
+            Interval::create([
+                'user_id' => Auth::id(),
+                'attendance_id' => $attendance->id,
+                'date' => Carbon::today()
+            ]);
+            // dd($attendance->id);
             return redirect('/');
         }
     }

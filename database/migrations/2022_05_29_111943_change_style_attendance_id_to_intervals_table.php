@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ChangeStyleTotalTimeToAttenndancesTable extends Migration
+class ChangeStyleAttendanceIdToIntervalsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class ChangeStyleTotalTimeToAttenndancesTable extends Migration
      */
     public function up()
     {
-        Schema::table('attendances', function (Blueprint $table) {
-            $table->time('total_time')->change();  //カラム型変更
+        Schema::table('intervals', function (Blueprint $table) {
+            $table->integer('attendance_id')->change();  //カラム型変更
         });
     }
 
@@ -25,8 +25,8 @@ class ChangeStyleTotalTimeToAttenndancesTable extends Migration
      */
     public function down()
     {
-        Schema::table('attendances', function (Blueprint $table) {
-            $table->date('total_time')->change();  //カラム型変更の削除
+        Schema::table('intervals', function (Blueprint $table) {
+            $table->date('attendance_id')->change();  //カラム型変更の削除
         });
     }
 }

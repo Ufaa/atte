@@ -11,7 +11,7 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 // 勤怠管理画面表示
-Route::get('/', [AttendanceController::class, 'index'])->name('index');
+Route::get('/', [AttendanceController::class, 'index'])->name('index')->middleware('auth');
 
 // 勤務開始打刻
 Route::post('/atte_start', [AttendanceController::class, 'atte_start'])->name('atte_start');
