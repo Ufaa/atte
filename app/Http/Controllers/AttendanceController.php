@@ -9,6 +9,7 @@ use App\Models\Attendance;
 use App\Models\Interval;
 use Attribute;
 use Carbon\Carbon;
+use Illuminate\Support\Carbon as SupportCarbon;
 use Ramsey\Uuid\Type\Integer;
 
 class AttendanceController extends Controller
@@ -62,7 +63,7 @@ class AttendanceController extends Controller
     }
 
     //次：勤務終了を押したら同日の休憩時間を足したものを勤務開始-勤務終了から引いて勤務総時間を格納する。
-    //9時間加算される謎・・・なぜかグリニッジ標準時基準（+9時間）になるから。
+    //9時間加算される謎・・・なぜかグリニッジ標準時基準（+9時間）になるから。ただし、休憩時間はなぜか日本時間なので要注意。
     //現状で終了時間が入る前の時間からの経過時間がstoreされる。（00:00:00からCarbon::nowの経過時間）よって経過時間が入力された後にstoreされるようにしたい。→functionの中で{}のあとに{}を作って繋げればOK。
     public function atte_end()
     {
@@ -80,10 +81,16 @@ class AttendanceController extends Controller
             $time_to_before = Attendance::where('date', Carbon::today())->latest()->first('end_time');
             $diff = (strtotime($time_to_before->end_time) - strtotime($time_from_before->start_time)) - 32400;
             $diffTime = date("H:i:s", $diff);
-            //  dd($diffTime);
+            $interval_from_before = Interval::where('date', Carbon::today())->latest()->first('start_time');
+            $interval_to_before = Interval::where('date', Carbon::today())->latest()->first('end_time');
+            $diff_interval = (strtotime($interval_to_before->end_time) - strtotime($interval_from_before->start_time));
+            $diffTime2 = $diff - $diff_interval;
+            $diffTime_interval = date("H:i:s", $diffTime2);
+            // dd($diffTime_interval);
+ 
 
             Attendance::where('date', Carbon::today())->latest()->first()->update([
-                'total_time' => $diffTime,
+                'total_time' => $diffTime_interval,
             ]);
 
             return redirect('/');

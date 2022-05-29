@@ -39,19 +39,17 @@ class IntervalController extends Controller
         $last_atte_end = Attendance::where('date', Carbon::today())->latest()->first('end_time');
         $last_interval_start = Interval::where('date', Carbon::today())->latest()->first('start_time');
         $last_interval_end = Interval::where('date', Carbon::today())->latest()->first('end_time');
-        $attendance =
-        Attendance::where('date', Carbon::today())->latest()->first();
-        // dd($last_atte_id);
+        $attendance = Attendance::where('date', Carbon::today())->latest()->first();
+        // dd($last_interval_start);
 
-        if ($last_atte_start == null) {
+        if (empty($last_atte_start)) {
             return redirect('/');
-        } else if ($last_interval_start == null) {
+        } elseif (empty($last_interval_start) and empty($last_interval_end)) {
             Interval::where('date', Carbon::today())->latest()->first()->update([
                 'start_time' => Carbon::now(),
             ]);
             return redirect('/');
-        } else if ($last_interval_start !== null && $last_interval_end == !null) {
-            $attendance = Attendance::where('date', Carbon::today())->latest()->first();
+        } elseif (!empty($last_atte_start) && !empty($last_interval_end)) {
             Interval::create([
                 'user_id' => Auth::id(),
                 'attendance_id' => $attendance->id,
@@ -59,13 +57,64 @@ class IntervalController extends Controller
                 'start_time' => Carbon::now()
             ]);
             return redirect('/');
-        } 
-        if ($last_interval_end == null) {
+        }else{
             return redirect('/');
-        } else {
-            return redirect('/');            
         }
-    }
+
+        // if(empty($last_atte_start)){
+        //     return redirect('/');
+        // }
+        // elseif(empty($last_interval_end)){
+        //     return redirect('/');
+        // } 
+        // elseif(empty($last_interval_start)) {
+        //     return redirect('/');
+        // }
+        // elseif(!empty($last_interval_start) and empty($last_interval_end)){
+        //     // dd($last_interval_start);
+        //     Interval::where('date', Carbon::today())->latest()->first()->update([
+        //         'start_time' => Carbon::now(),
+        //     ]);
+        //     return redirect('/');
+        // } 
+        // elseif (!empty($last_atte_start) and !empty($last_interval_end)){
+        //     Interval::create([
+        //         'user_id' => Auth::id(),
+        //         'attendance_id' => $attendance->id,
+        //         'date' => Carbon::today(),
+        //         'start_time' => Carbon::now()
+        //     ]);
+        //     return redirect('/');
+        // }
+        // else {
+        //     return redirect('/');   
+        // }
+    
+
+        // if ($last_atte_start == null) {
+        //     return redirect('/');
+        // } else {
+        //     Interval::where('date', Carbon::today())->latest()->first()->update([
+        //         'start_time' => Carbon::now(),
+        //     ]);
+        // }
+        //             return redirect('/');
+        // {
+        //     $last_interval_start = Interval::where('date', Carbon::today())->latest()->first('start_time');
+        //     $last_interval_end = Interval::where('date', Carbon::today())->latest()->first('end_time');
+        //     if ($last_interval_start != null and $last_interval_end != null) {
+        //     $attendance = Attendance::where('date', Carbon::today())->latest()->first();
+        //     Interval::create([
+        //         'user_id' => Auth::id(),
+        //         'attendance_id' => $attendance->id,
+        //         'date' => Carbon::today(),
+        //         'start_time' => Carbon::now()
+        //     ]);
+        //     }
+        // }
+        // return redirect('/');
+}
+
 
         //勤務終了していたら休憩を開始できない、勤務開始して勤務終了していなけば次へ
         //まず勤務を開始していて、休憩が初めてなら、休憩を新規開始する
