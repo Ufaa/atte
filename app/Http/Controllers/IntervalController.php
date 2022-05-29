@@ -65,7 +65,7 @@ class IntervalController extends Controller
         } else {
             return redirect('/');            
         }
-
+    }
 
         //勤務終了していたら休憩を開始できない、勤務開始して勤務終了していなけば次へ
         //まず勤務を開始していて、休憩が初めてなら、休憩を新規開始する
